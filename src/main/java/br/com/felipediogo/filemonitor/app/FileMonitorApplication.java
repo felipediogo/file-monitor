@@ -1,4 +1,4 @@
-package br.com.felipediogo.filemonitor;
+package br.com.felipediogo.filemonitor.app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

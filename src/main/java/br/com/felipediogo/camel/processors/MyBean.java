@@ -1,4 +1,4 @@
-package br.com.felipediogo.components;
+package br.com.felipediogo.camel.processors;
 
 
 import org.springframework.stereotype.Component;

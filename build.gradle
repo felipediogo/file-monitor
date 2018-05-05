@@ -28,4 +28,5 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	compile "org.apache.camel:camel-spring-boot-starter:2.17.0"
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 }
