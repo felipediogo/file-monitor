@@ -1,6 +1,6 @@
 package br.com.felipediogo.camel.processors;
 
-import br.com.felipediogo.models.Report;
+import br.com.felipediogo.business.Report;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.slf4j.Logger;

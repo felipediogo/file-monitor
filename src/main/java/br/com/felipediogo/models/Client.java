@@ -17,14 +17,6 @@ public class Client {
         return cnpj;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getBusiness() {
-        return business;
-    }
-
     @Override
     public String toString() {
         return new ToStringBuilder(this)

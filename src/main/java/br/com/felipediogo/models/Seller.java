@@ -17,14 +17,6 @@ public class Seller {
         return cpf;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public Double getSalary() {
-        return salary;
-    }
-
     @Override
     public String toString() {
         return new ToStringBuilder(this)

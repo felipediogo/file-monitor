@@ -4,7 +4,7 @@ import br.com.felipediogo.converters.ClientConverter;
 import br.com.felipediogo.converters.SaleConverter;
 import br.com.felipediogo.converters.SellerConverter;
 import br.com.felipediogo.models.Client;
-import br.com.felipediogo.models.Report;
+import br.com.felipediogo.business.Report;
 import br.com.felipediogo.models.Sale;
 import br.com.felipediogo.models.Seller;
 import org.apache.camel.Exchange;

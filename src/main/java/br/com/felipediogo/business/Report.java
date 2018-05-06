@@ -1,4 +1,8 @@
-package br.com.felipediogo.models;
+package br.com.felipediogo.business;
+
+import br.com.felipediogo.models.Client;
+import br.com.felipediogo.models.Sale;
+import br.com.felipediogo.models.Seller;
 
 import java.util.ArrayList;
 import java.util.List;
