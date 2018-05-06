@@ -1,5 +1,7 @@
 package br.com.felipediogo.models;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class Sale {
@@ -27,10 +29,27 @@ public class Sale {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-                .append("id", id)
-                .append("saleValue", saleValue)
-                .append("sellerName", sellerName)
-                .toString();
+        final StringBuilder sb = new StringBuilder("Sale{");
+        sb.append("id=").append(id);
+        sb.append(", saleValue=").append(saleValue);
+        sb.append(", sellerName='").append(sellerName).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Sale sale = (Sale) o;
+
+        return new EqualsBuilder()
+                .append(id, sale.id)
+                .append(saleValue, sale.saleValue)
+                .append(sellerName, sale.sellerName)
+                .isEquals();
+    }
+
 }

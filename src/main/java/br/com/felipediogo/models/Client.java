@@ -1,5 +1,7 @@
 package br.com.felipediogo.models;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class Client {
@@ -19,10 +21,26 @@ public class Client {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-                .append("cnpj", cnpj)
-                .append("name", name)
-                .append("business", business)
-                .toString();
+        final StringBuilder sb = new StringBuilder("Client{");
+        sb.append("cnpj='").append(cnpj).append('\'');
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", business='").append(business).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Client client = (Client) o;
+
+        return new EqualsBuilder()
+                .append(cnpj, client.cnpj)
+                .append(name, client.name)
+                .append(business, client.business)
+                .isEquals();
     }
 }

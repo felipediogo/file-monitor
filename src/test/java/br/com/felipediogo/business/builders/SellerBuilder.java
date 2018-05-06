@@ -26,4 +26,8 @@ public class SellerBuilder {
     public static Seller buildSeller3() {
         return new Seller(CPF_3, NOME_3, SALARIO_3);
     }
+
+    public static String buildSeller1Line() {
+        return String.format("001ç%sç%sç%s", CPF_1, NOME_1, SALARIO_1);
+    }
 }

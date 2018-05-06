@@ -38,4 +38,8 @@ public class SaleBuilder {
     public static Sale buildSale8() {
         return new Sale(8, 48.95, NOME_2);
     }
+
+    public static String buildSale1Line() {
+        return String.format("001ç1ç[1-2-1.30,2-4-1.20,3-2-2.95]ç%s", NOME_1);
+    }
 }

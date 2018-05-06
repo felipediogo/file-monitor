@@ -18,8 +18,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class FileProcessor implements Processor {
 
-    private static final String CLIENT_IDENTIFIER = "002";
     private static final String SELLER_IDENTIFIER = "001";
+    private static final String CLIENT_IDENTIFIER = "002";
     private static final String SALE_IDENTIFIER = "003";
 
     static Logger LOG = LoggerFactory.getLogger(ReportProcessor.class);
@@ -33,7 +33,7 @@ public class FileProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) {
-        LOG.info("Starting to process file => [{}]", getFileName(exchange));
+        LOG.info("Iniciando o processamento do arquivo => [{}]", getFileName(exchange));
         String content = exchange.getIn().getBody(String.class);
         exchange.getIn().setBody(createDataForReport(getFileName(exchange), content));
     }
@@ -42,25 +42,19 @@ public class FileProcessor implements Processor {
         Report report = new Report(fileName);
         String[] lines = content.split("\n");
         for (String line : lines) {
-            LOG.debug("Parsing => [{}]", line);
+            LOG.debug("Iniciando parser => [{}]", line);
             switch (lineIdentifier(line)) {
                 case CLIENT_IDENTIFIER:
-                    Client client = clientConverter.convertClient(line);
-                    report.addClient(client);
-                    debugLog(client);
+                    convertClient(report, line);
                     break;
                 case SELLER_IDENTIFIER:
-                    Seller seller = sellerConverter.convertSeller(line);
-                    report.addSeller(seller);
-                    debugLog(seller);
+                    convertSeller(report, line);
                     break;
                 case SALE_IDENTIFIER:
-                    Sale sale = saleConverter.convertSale(line);
-                    report.addSale(sale);
-                    debugLog(sale);
+                    convertSale(report, line);
                     break;
                 default:
-                    LOG.error("It was not possible to parse: [{}]", line);
+                    LOG.error("Não foi possível identificar a informação: [{}]", line);
                     //emit error message
                     break;
             }
@@ -68,8 +62,32 @@ public class FileProcessor implements Processor {
         return report;
     }
 
+    private void convertSale(Report report, String line) {
+        saleConverter.convertSale(line)
+                .ifPresent(sale -> {
+                    report.addSale(sale);
+                    debugLog(sale);
+                });
+    }
+
+    private void convertSeller(Report report, String line) {
+        sellerConverter.convertSeller(line)
+                .ifPresent(seller -> {
+                    report.addSeller(seller);
+                    debugLog(seller);
+                });
+    }
+
+    private void convertClient(Report report, String line) {
+        clientConverter.convertClient(line)
+                .ifPresent(client -> {
+                    report.addClient(client);
+                    debugLog(client);
+                });
+    }
+
     private void debugLog(Object o) {
-        LOG.debug("Inserting into report dataset => [{}]", o.toString());
+        LOG.debug("Objeto convertido => [{}]", o.toString());
     }
 
     private String lineIdentifier(String line) {

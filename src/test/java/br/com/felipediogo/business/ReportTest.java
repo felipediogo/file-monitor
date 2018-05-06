@@ -17,10 +17,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class ReportTest {
 
     private Report report;
-
+    private final static String REPORT_NAME = "mock.file";
     @Before
     public void setup() {
-        report = new Report("mockFile");
+        report = new Report(REPORT_NAME);
     }
 
     /*
@@ -59,6 +59,11 @@ public class ReportTest {
     public void testShouldCalculateWorstSeller() {
         addSales();
         assertThat(report.getWorstSeller(), is(equalTo(NOME_1)));
+    }
+
+    @Test
+    public void testShouldHaveFileName() {
+        assertThat(report.getFileName(), is(equalTo(REPORT_NAME)));
     }
 
     private void addClients() {

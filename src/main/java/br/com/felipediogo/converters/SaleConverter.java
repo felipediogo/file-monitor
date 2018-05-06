@@ -1,9 +1,15 @@
 package br.com.felipediogo.converters;
 
 import br.com.felipediogo.models.Sale;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Optional;
+
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 @Component
 public class SaleConverter {
@@ -17,11 +23,18 @@ public class SaleConverter {
     private static final String VALUE_SPLITTER = "-";
     private static final String ITEMS_SPLITTER = ",";
 
-    public Sale convertSale(String line) {
-        return new Sale(
-                Integer.valueOf(lineValue(line, ID_INDEX)),
-                calculateSaleValue(lineValue(line, SALES_INDEX)),
-                lineValue(line, SELLER_INDEX));
+    static Logger LOG = LoggerFactory.getLogger(SaleConverter.class);
+
+    public Optional<Sale> convertSale(String line) {
+        try {
+            return of(new Sale(
+                    Integer.valueOf(lineValue(line, ID_INDEX)),
+                    calculateSaleValue(lineValue(line, SALES_INDEX)),
+                    lineValue(line, SELLER_INDEX)));
+        } catch (Exception e) {
+            LOG.error("Não foi possível parsear a linha : [{}]", line);
+            return empty();
+        }
     }
 
     private String lineValue(String line, int index) {
@@ -43,4 +56,5 @@ public class SaleConverter {
     private String[] transformItemsStringToArray(String line) {
         return line.substring(1, line.length() - 1).split(ITEMS_SPLITTER);
     }
+
 }
