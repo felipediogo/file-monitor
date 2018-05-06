@@ -3,7 +3,10 @@ package br.com.felipediogo.camel.processors;
 import br.com.felipediogo.converters.ClientConverter;
 import br.com.felipediogo.converters.SaleConverter;
 import br.com.felipediogo.converters.SellerConverter;
+import br.com.felipediogo.models.Client;
 import br.com.felipediogo.models.Report;
+import br.com.felipediogo.models.Sale;
+import br.com.felipediogo.models.Seller;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.component.file.GenericFileMessage;
@@ -32,26 +35,35 @@ public class FileProcessor implements Processor {
     public void process(Exchange exchange) {
         LOG.info("Starting to process file => [{}]", getFileName(exchange));
         String content = exchange.getIn().getBody(String.class);
-        exchange.getIn().setBody(createDataForReport(content));
+        exchange.getIn().setBody(createDataForReport(getFileName(exchange), content));
     }
 
-    private Report createDataForReport(String content) {
-        Report report = new Report();
+    private Report createDataForReport(String fileName, String content) {
+        Report report = new Report(fileName);
         String[] lines = content.split("\n");
         for (String line : lines) {
             LOG.debug("Parsing => [{}]", line);
             switch (lineIdentifier(line)) {
                 case CLIENT_IDENTIFIER:
-                    report.getClients().add(clientConverter.convertClient(line));
-                    LOG.info(clientConverter.convertClient(line).toString());
+                    Client client = clientConverter.convertClient(line);
+                    if (doesntHaveClient(report, client)) {
+                        report.getClients().add(client);
+                        LOG.info(client.toString());
+                    }
                     break;
                 case SELLER_IDENTIFIER:
-                    report.getSellers().add(sellerConverter.convertSeller(line));
-                    LOG.info(sellerConverter.convertSeller(line).toString());
+                    Seller seller = sellerConverter.convertSeller(line);
+                    if (doesntHaveSeller(report, seller)) {
+                        report.getSellers().add(seller);
+                        LOG.info(sellerConverter.convertSeller(line).toString());
+                    }
                     break;
                 case SALE_IDENTIFIER:
-                    report.getSales().add(saleConverter.convertSale(line));
-                    LOG.info(saleConverter.convertSale(line).toString());
+                    Sale sale = saleConverter.convertSale(line);
+                    if (doesntHaveSale(report, sale)) {
+                        report.getSales().add(sale);
+                        LOG.info(saleConverter.convertSale(line).toString());
+                    }
                     break;
                 default:
                     LOG.error("It was not possible to parse: [{}]", line);
@@ -60,6 +72,21 @@ public class FileProcessor implements Processor {
             }
         }
         return report;
+    }
+
+    private boolean doesntHaveSale(Report report, Sale sale) {
+        return report.getSales().stream()
+                .noneMatch(f -> f.getId().equals(sale.getId()));
+    }
+
+    private boolean doesntHaveClient(Report report, Client client) {
+        return report.getClients().stream()
+                .noneMatch(f -> f.getCnpj().endsWith(client.getCnpj()));
+    }
+
+    private boolean doesntHaveSeller(Report report, Seller seller) {
+        return report.getSellers().stream()
+                .noneMatch(f -> f.getCpf().endsWith(seller.getCpf()));
     }
 
     private String lineIdentifier(String line) {
