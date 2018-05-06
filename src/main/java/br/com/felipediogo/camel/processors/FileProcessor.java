@@ -1,10 +1,10 @@
 package br.com.felipediogo.camel.processors;
 
+import br.com.felipediogo.business.Report;
 import br.com.felipediogo.converters.ClientConverter;
 import br.com.felipediogo.converters.SaleConverter;
 import br.com.felipediogo.converters.SellerConverter;
 import br.com.felipediogo.models.Client;
-import br.com.felipediogo.business.Report;
 import br.com.felipediogo.models.Sale;
 import br.com.felipediogo.models.Seller;
 import org.apache.camel.Exchange;
@@ -24,21 +24,29 @@ public class FileProcessor implements Processor {
 
     static Logger LOG = LoggerFactory.getLogger(ReportProcessor.class);
 
+    final ClientConverter clientConverter;
+    final SellerConverter sellerConverter;
+    final SaleConverter saleConverter;
+
     @Autowired
-    ClientConverter clientConverter;
-    @Autowired
-    SellerConverter sellerConverter;
-    @Autowired
-    SaleConverter saleConverter;
+    public FileProcessor(
+            final ClientConverter clientConverter,
+            final SellerConverter sellerConverter,
+            final SaleConverter saleConverter
+    ) {
+        this.clientConverter = clientConverter;
+        this.sellerConverter = sellerConverter;
+        this.saleConverter = saleConverter;
+    }
 
     @Override
-    public void process(Exchange exchange) {
+    public void process(Exchange exchange) throws Exception {
         LOG.info("Iniciando o processamento do arquivo => [{}]", getFileName(exchange));
         String content = exchange.getIn().getBody(String.class);
         exchange.getIn().setBody(createDataForReport(getFileName(exchange), content));
     }
 
-    private Report createDataForReport(String fileName, String content) {
+    private Report createDataForReport(String fileName, String content) throws Exception {
         Report report = new Report(fileName);
         String[] lines = content.split("\n");
         for (String line : lines) {
@@ -54,36 +62,30 @@ public class FileProcessor implements Processor {
                     convertSale(report, line);
                     break;
                 default:
-                    LOG.error("Não foi possível identificar a informação: [{}]", line);
-                    //emit error message
-                    break;
+                    String message = String.format("Não foi possível identificar a informação: [%s]", line);
+                    LOG.error(message);
+                    throw new Exception(message);
             }
         }
         return report;
     }
 
     private void convertSale(Report report, String line) {
-        saleConverter.convertSale(line)
-                .ifPresent(sale -> {
-                    report.addSale(sale);
-                    debugLog(sale);
-                });
+        Sale sale = saleConverter.convert(line);
+        report.addSale(sale);
+        debugLog(sale);
     }
 
     private void convertSeller(Report report, String line) {
-        sellerConverter.convertSeller(line)
-                .ifPresent(seller -> {
-                    report.addSeller(seller);
-                    debugLog(seller);
-                });
+        Seller seller = sellerConverter.convert(line);
+        report.addSeller(seller);
+        debugLog(seller);
     }
 
     private void convertClient(Report report, String line) {
-        clientConverter.convertClient(line)
-                .ifPresent(client -> {
-                    report.addClient(client);
-                    debugLog(client);
-                });
+        Client client = clientConverter.convert(line);
+        report.addClient(client);
+        debugLog(client);
     }
 
     private void debugLog(Object o) {
@@ -95,6 +97,8 @@ public class FileProcessor implements Processor {
     }
 
     private String getFileName(Exchange exchange) {
-        return exchange.getIn().getBody(GenericFileMessage.class).getGenericFile().getFileName();
+        return (exchange.getProperty("fileName") == null)
+                ? exchange.getIn().getBody(GenericFileMessage.class).getGenericFile().getFileName()
+                : exchange.getProperty("fileName").toString();
     }
 }

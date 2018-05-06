@@ -2,9 +2,7 @@ package br.com.felipediogo.business.builders;
 
 import br.com.felipediogo.models.Sale;
 
-import static br.com.felipediogo.business.builders.SellerBuilder.NOME_1;
-import static br.com.felipediogo.business.builders.SellerBuilder.NOME_2;
-import static br.com.felipediogo.business.builders.SellerBuilder.NOME_3;
+import static br.com.felipediogo.business.builders.SellerBuilder.*;
 
 public class SaleBuilder {
     public static Sale buildSale1() {

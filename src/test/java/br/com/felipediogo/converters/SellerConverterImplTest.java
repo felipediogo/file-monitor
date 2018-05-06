@@ -7,38 +7,29 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.Optional;
-
 import static br.com.felipediogo.business.builders.SellerBuilder.buildSeller1;
 import static br.com.felipediogo.business.builders.SellerBuilder.buildSeller1Line;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(JUnit4.class)
-public class SellerConverterTest {
+public class SellerConverterImplTest {
 
     private SellerConverter sellerConverter;
 
     @Before
     public void setup() {
-        sellerConverter = new SellerConverter();
+        sellerConverter = new SellerConverterImpl();
     }
 
     @Test
     public void testShouldConvertValidSeller() {
-        Optional<Seller> seller = sellerConverter.convertSeller(buildSeller1Line());
-        assertThat(seller, is(equalTo(of(buildSeller1()))));
-        String expected = of(buildSeller1()).get().toString();
-        String result = seller.get().toString();
+        Seller seller = sellerConverter.convert(buildSeller1Line());
+        assertThat(seller, is(equalTo(buildSeller1())));
+        String expected = buildSeller1().toString();
+        String result = seller.toString();
         assertThat(result, Matchers.is(Matchers.equalTo(expected)));
     }
 
-    @Test
-    public void testShouldReturnEmptyForFailedSeller() {
-        Optional<Seller> seller = sellerConverter.convertSeller("");
-        assertThat(seller, is(equalTo(empty())));
-    }
 }

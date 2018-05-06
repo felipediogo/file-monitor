@@ -3,7 +3,14 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
 
-    <bean id="fileProcessor" class="br.com.felipediogo.camel.processors.FileProcessor"/>
+    <bean id="fileProcessor" class="br.com.felipediogo.camel.processors.FileProcessor">
+        <constructor-arg ref = "clientConverterImpl"/>
+        <constructor-arg ref = "sellerConverterImpl"/>
+        <constructor-arg ref = "saleConverterImpl"/>
+    </bean>
     <bean id="reportProcessor" class="br.com.felipediogo.camel.processors.ReportProcessor"/>
+    <bean id="clientConverterImpl" class="br.com.felipediogo.converters.ClientConverterImpl"/>
+    <bean id="sellerConverterImpl" class="br.com.felipediogo.converters.SellerConverterImpl"/>
+    <bean id="saleConverterImpl" class="br.com.felipediogo.converters.SaleConverterImpl"/>
 
 </beans>

@@ -18,6 +18,7 @@ public class ReportTest {
 
     private Report report;
     private final static String REPORT_NAME = "mock.file";
+
     @Before
     public void setup() {
         report = new Report(REPORT_NAME);
