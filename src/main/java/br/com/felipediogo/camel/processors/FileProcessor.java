@@ -46,24 +46,18 @@ public class FileProcessor implements Processor {
             switch (lineIdentifier(line)) {
                 case CLIENT_IDENTIFIER:
                     Client client = clientConverter.convertClient(line);
-                    if (doesntHaveClient(report, client)) {
-                        report.getClients().add(client);
-                        LOG.info(client.toString());
-                    }
+                    report.addClient(client);
+                    debugLog(client);
                     break;
                 case SELLER_IDENTIFIER:
                     Seller seller = sellerConverter.convertSeller(line);
-                    if (doesntHaveSeller(report, seller)) {
-                        report.getSellers().add(seller);
-                        LOG.info(sellerConverter.convertSeller(line).toString());
-                    }
+                    report.addSeller(seller);
+                    debugLog(seller);
                     break;
                 case SALE_IDENTIFIER:
                     Sale sale = saleConverter.convertSale(line);
-                    if (doesntHaveSale(report, sale)) {
-                        report.getSales().add(sale);
-                        LOG.info(saleConverter.convertSale(line).toString());
-                    }
+                    report.addSale(sale);
+                    debugLog(sale);
                     break;
                 default:
                     LOG.error("It was not possible to parse: [{}]", line);
@@ -74,19 +68,8 @@ public class FileProcessor implements Processor {
         return report;
     }
 
-    private boolean doesntHaveSale(Report report, Sale sale) {
-        return report.getSales().stream()
-                .noneMatch(f -> f.getId().equals(sale.getId()));
-    }
-
-    private boolean doesntHaveClient(Report report, Client client) {
-        return report.getClients().stream()
-                .noneMatch(f -> f.getCnpj().endsWith(client.getCnpj()));
-    }
-
-    private boolean doesntHaveSeller(Report report, Seller seller) {
-        return report.getSellers().stream()
-                .noneMatch(f -> f.getCpf().endsWith(seller.getCpf()));
+    private void debugLog(Object o) {
+        LOG.debug("Inserting into report dataset => [{}]", o.toString());
     }
 
     private String lineIdentifier(String line) {
