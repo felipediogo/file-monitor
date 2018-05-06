@@ -29,4 +29,5 @@ dependencies {
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	compile "org.apache.camel:camel-spring-boot-starter:2.17.0"
 	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+	compile group: 'org.projectlombok', name: 'lombok', version: '1.16.20'
 }

@@ -9,21 +9,19 @@ public class FileRouter extends RouteBuilder {
 
     @Value("${file_extension}")
     private String fileExtension;
-    @Value("${process_file_bean}")
-    private String processorBean;
 
     @Override
     public void configure() {
         from(fileRoute())
-                .convertBodyTo(String.class)
-                .to(processorBean);
+                .process("fileProcessor")
+                .process("reportProcessor");
     }
 
     private String fileRoute() {
         return new StringBuilder()
                 .append("file://")
                 .append(homePath())
-                .append(String.format("/data/in?move=.move&include=.*%s$", fileExtension)).toString();
+                .append(String.format("/data/in?charset=UTF-8&preMove=staging&move=../.done&include=.*%s$", fileExtension)).toString();
     }
 
     private String homePath() {
