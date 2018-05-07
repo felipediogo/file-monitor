@@ -28,8 +28,9 @@ public class ReportProcessor implements Processor {
                 report.getSellersCount()));
         outContent.append(String.format("Maior venda no arquivo de entrada: %s\n",
                 report.getMostExpensiveSale()));
-        outContent.append(String.format("O pior vendedor no arquivo de entrada: %s\n",
+        outContent.append(String.format("O pior vendedor no arquivo de entrada: %s",
                 report.getWorstSeller()));
+        System.out.println(outContent.toString());
         return outContent.toString();
     }
 
